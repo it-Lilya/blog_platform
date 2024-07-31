@@ -1,0 +1,13 @@
+$color: #52C41A;
+
+.signIn {
+  color: $color;
+  width: 109px;
+  border: 1px solid $color;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  line-height: 28px;
+  font-size: 18px;
+  border-radius: 5px;
+}

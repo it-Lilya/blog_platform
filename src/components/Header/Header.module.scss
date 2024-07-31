@@ -1,0 +1,44 @@
+.header {
+  height: 80px;
+  margin: 0;
+}
+.header__container {
+  margin-left: 22px;
+  margin-right: 22px;
+  margin-top: auto;
+  margin-bottom: auto;
+  display: flex;
+  padding-top: 13px;
+  align-items: center;
+}
+.header__title {
+  font-size: 18px;
+  line-height: 28px;
+}
+.header__login_container {
+  display: flex;
+  margin-left: auto;
+  height: 50px;
+}
+.header__signIn {
+  text-decoration: none;
+  width: 109px;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  line-height: 28px;
+  font-size: 18px;
+  color: black;
+}
+.header__signUp {
+  text-decoration: none;
+  color: #52C41A;
+  width: 109px;
+  border: 1px solid #52C41A;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  line-height: 28px;
+  font-size: 18px;
+  border-radius: 5px;
+}
