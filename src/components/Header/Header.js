@@ -2,21 +2,29 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 import classes from './Header.module.scss';
-// import SignIn from './SignIn/SignIn';
-// import SignUp from './SignUp/SignUp';
+import { UserHeader } from './UserHeader/UserHeader';
 
-const Header = () => {
+const Header = ({ flag, editFlag, currentName }) => {
+  console.log(flag);
   return (
     <header className={classes.header}>
       <div className={classes.header__container}>
-        <div className={classes.header__title}>Realworld Blog</div>
+        <Link to="/" className={classes.header__title}>
+          Realworld Blog
+        </Link>
         <div className={classes.header__login_container}>
-          <Link to="/sign-in" className={classes.header__signIn}>
-            Sign in
-          </Link>
-          <Link to="/sign-up" className={classes.header__signUp}>
-            Sign up
-          </Link>
+          {JSON.parse(localStorage.getItem('auth')) ? (
+            <UserHeader editFlag={editFlag} currentName={currentName} />
+          ) : (
+            <>
+              <Link to="/sign-in" className={classes.header__signIn}>
+                Sign in
+              </Link>
+              <Link to="/sign-up" className={classes.header__signUp}>
+                Sign up
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </header>

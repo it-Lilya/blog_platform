@@ -1,8 +1,67 @@
-.signUp {
-  width: 109px;
-  align-items: center;
-  display: flex;
-  justify-content: center;
+.registration__main {
+  background-color: #EBEEF3;
+  margin: 0;
+  padding: 0;
+  border: 1px solid transparent;
+  min-height: 100vh;
+}
+.registration__container {
+  width: 26.7%;
+  // height: 600px;
+  background-color: white;
+  margin: auto;
+  margin-top: 60px;
+}
+.registration__title {
+  margin: auto;
   line-height: 28px;
-  font-size: 18px;
+  font-size: 20px;
+  align-items: center;
+  text-align: center;
+  padding-top: 50px;
+  font-weight: 500;
+}
+.registration__form {
+  width: 84%;
+  margin: auto;
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+.registration__label {
+  font-size: 14px;
+  width: 100%;
+}
+.registration__input {
+  height: 40px;
+  width: 100%;
+  display: block;
+  border: 1px solid silver;
+  border-radius: 3px;
+  margin-bottom: 15px;
+  margin-top: 10px;
+  box-sizing: border-box;
+}
+.registration__line {
+  border-top: 1px solid silver;
+}
+.registration__checkbox {
+  margin-top: 10px;
+}
+
+.registration__create {
+  height: 40px;
+  margin-top: 20px;
+}
+.registration__footnote {
+  text-align: center;
+}
+.registration__link {
+  color: #1890FF;
+}
+.registration__warning {
+  color: #F5222D;
+  font-size: 14px;
+  display: block;
 }

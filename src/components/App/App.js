@@ -3,11 +3,14 @@ import React, { useEffect, useState } from 'react';
 
 import './App.css';
 
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 
 import Header from '../Header/Header';
+// eslint-disable-next-line import/order
 import ArticlesList from '../ArticlesList/ArticlesList';
 // import Article from '../ArticlesList/Article/Article';
+
+import EditProfile from '../Header/EditProfile/EditProfile';
 
 import SignUp from './../Header/SignUp/SignUp';
 import SignIn from './../Header/SignIn/SignIn';
@@ -16,34 +19,12 @@ const App = () => {
   const [articles, setArticles] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [allArticles, setAllArticles] = useState([]);
-  const [user, setUser] = useState();
+  // const [user, setUser] = useState();
   const [loader, setLoader] = useState(true);
-  const location = useLocation();
+  const [flag, setFlag] = useState(false);
+  const [currentName, setCurrentName] = useState(JSON.parse(localStorage.getItem('username')));
   // const [currentArticleOne, setCurrentArticleOne] = useState();
   useEffect(() => {
-    try {
-      fetch('https://api.realworld.io/api/users', {
-        method: 'POST',
-        headers: {
-          accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          user: {
-            username: `abracadabraasdad${Math.random() * 0.2543}`,
-            email: `abracadabraasdad${Math.random() * 0.2543}`,
-            password: `abracadabraasdad${Math.random() * 0.2543}`,
-          },
-        }),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          setUser(data);
-          localStorage.setItem('token', JSON.stringify(data.user.token));
-        });
-    } catch (error) {
-      console.log(error);
-    }
     fetch('https://api.realworld.io/api/articles')
       .then((response) => response.json())
       .then((data) => {
@@ -52,6 +33,9 @@ const App = () => {
         setLoader(false);
       });
   }, []);
+  useEffect(() => {
+    setCurrentName(JSON.parse(localStorage.getItem('username')));
+  });
   function editPage(e) {
     setLoader(true);
     setCurrentPage(e);
@@ -63,7 +47,6 @@ const App = () => {
           setLoader(false);
         }, 200);
       });
-    console.log(user, location);
   }
   function currentArticle(e) {
     setLoader(true);
@@ -74,9 +57,15 @@ const App = () => {
         setLoader(false);
       });
   }
+  function editFlag() {
+    setFlag(!flag);
+  }
+  function editName(value) {
+    setCurrentName(value);
+  }
   return (
     <div className="App">
-      <Header />
+      <Header flag={flag} editFlag={editFlag} currentName={currentName} />
       <Routes>
         <Route
           path="/"
@@ -107,7 +96,7 @@ const App = () => {
           }
         />
         <Route path="/sign-up" element={<SignUp />} />
-        <Route path="/sign-in" element={<SignIn />} />
+        <Route path="/sign-in" element={<SignIn editFlag={editFlag} />} />
         <Route
           path="articles/:id"
           exec
@@ -122,6 +111,7 @@ const App = () => {
             />
           }
         />
+        <Route path="/profile" element={<EditProfile editName={editName} />} />
       </Routes>
     </div>
   );

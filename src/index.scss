@@ -3,6 +3,7 @@ body {
   padding: 0;
   box-sizing: border-box;
   min-height: 100%;
+  font-family: 'Roboto', sans-serif;
 }
 .ant-pagination {
   width: 14.2%;
@@ -43,3 +44,5 @@ body {
   padding-right: 0px;
   padding-bottom: 5px !important;
 }
+
+.file-upload label input { display: none; }
