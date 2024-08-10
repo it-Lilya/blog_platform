@@ -1,17 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+// import { marked } from 'marked';
 
 import classes from './Article.module.scss';
 
-const Article = ({ article, length, currentArticle }) => {
+const Article = ({ article, length, gettingCurrentArticle }) => {
   const [classesDescription, setClassesDescription] = useState(classes.article__text);
   const [classesAuthor, setClassesAuthor] = useState(classes.article__author__container);
+  // const [markdownText, setMarkdownText] = useState('');
+  // useEffect(() => {
+  //   const fetchMarkdown = async () => {
+  //     try {
+  //       const response = await fetch(`https://api.realworld.io/api/articles/${article.slug}`);
+  //       const data = await response.json();
+  //       console.log(data);
+  //       // setMarkdownText(data.article.body);
+  //     } catch (error) {
+  //       console.error('Error fetching the markdown file:', error);
+  //     }
+  //   };
+
+  //   fetchMarkdown();
+  // }, [article.slug]);
+  // console.log(currentArticle);
+  // useEffect(() => console.log(currentArticle));
   useEffect(() => {
     if (length === 1) {
       setClassesDescription(classes.article__text + ' ' + classes.article__text__one);
       setClassesAuthor(classes.article__author__container + ' ' + classes.article__author__one);
     }
   }, []);
+  // useEffect(() => console.log(currentArticle), [currentArticle]);
   const formatPublication = (date) => {
     const dates = new Date(date);
     let month = dates.toLocaleString('en', { month: 'long' });
@@ -24,7 +43,8 @@ const Article = ({ article, length, currentArticle }) => {
       <div className={classes.article__container}>
         <div className={classes.article__title__header}>
           <Link to={`/articles/${article.slug}`}>
-            <div className={classes.article__title} onClick={() => currentArticle(article.slug)}>
+            {/* <div className={classes.article__title} onClick={() => currentArticle(article.slug)}> */}
+            <div className={classes.article__title} onClick={() => gettingCurrentArticle(article.slug)}>
               {article.title}
             </div>
           </Link>
@@ -38,7 +58,6 @@ const Article = ({ article, length, currentArticle }) => {
           ))}
         </div>
         <div className={classesDescription}>{article.description}</div>
-        {length === 1 && <div className={classes.article__read_more}>{article.body}</div>}
       </div>
       <div className={classes.article__author}>
         <div className={classesAuthor}>

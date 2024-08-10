@@ -7,7 +7,7 @@
 }
 .entrance__container {
   width: 26.7%;
-  height: 374px;
+  min-height: 374px;
   background-color: white;
   margin: auto;
   margin-top: 60px;
@@ -33,13 +33,16 @@
   font-size: 14px;
   width: 100%;
 }
+.entrance__label:nth-child(2) {
+  margin-top: 25px;
+}
 .entrance__input {
   height: 40px;
   width: 100%;
   display: block;
   border: 1px solid silver;
   border-radius: 3px;
-  margin-bottom: 15px;
+  padding-left: 10px;
   margin-top: 10px;
   box-sizing: border-box;
 }
@@ -53,4 +56,10 @@
 .entrance__link {
   margin-left: 5px;
   color: #1890FF;
+}
+.entry__warning {
+  color: #F5222D;
+  font-size: 14px;
+  margin-top: 7px;
+  display: block;
 }

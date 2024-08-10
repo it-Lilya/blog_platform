@@ -6,66 +6,53 @@ import './App.css';
 import { Routes, Route } from 'react-router-dom';
 
 import Header from '../Header/Header';
-// eslint-disable-next-line import/order
 import ArticlesList from '../ArticlesList/ArticlesList';
-// import Article from '../ArticlesList/Article/Article';
-
 import EditProfile from '../Header/EditProfile/EditProfile';
+import NewArticle from '../ArticlesList/NewArticle/NewArticle';
+import PrivateRoute from '../ArticlesList/NewArticle/PrivateRoute';
+import CurrentArticle from '../ArticlesList/CurrentArticle/CurrentArticle';
 
 import SignUp from './../Header/SignUp/SignUp';
 import SignIn from './../Header/SignIn/SignIn';
 
 const App = () => {
   const [articles, setArticles] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [allArticles, setAllArticles] = useState([]);
-  // const [user, setUser] = useState();
-  const [loader, setLoader] = useState(true);
   const [flag, setFlag] = useState(false);
   const [currentName, setCurrentName] = useState(JSON.parse(localStorage.getItem('username')));
-  // const [currentArticleOne, setCurrentArticleOne] = useState();
+  const [currentArticle, setCurrentArticle] = useState();
+  const [allArticles, setAllArticles] = useState([]);
   useEffect(() => {
     fetch('https://api.realworld.io/api/articles')
       .then((response) => response.json())
       .then((data) => {
         setAllArticles(data.articles);
         setArticles(data.articles.slice(0, 5));
-        setLoader(false);
       });
   }, []);
   useEffect(() => {
     setCurrentName(JSON.parse(localStorage.getItem('username')));
   });
-  function editPage(e) {
-    setLoader(true);
-    setCurrentPage(e);
-    fetch(`https://api.realworld.io/api/articles?limit=5&offset=${(e - 1) * 5}`)
-      .then((response) => response.json())
-      .then((data) => {
-        setArticles(data.articles);
-        setTimeout(() => {
-          setLoader(false);
-        }, 200);
-      });
-  }
-  function currentArticle(e) {
-    setLoader(true);
+  function gettingCurrentArticle(e) {
     fetch(`https://api.realworld.io/api/articles/${e}`)
       .then((res) => res.json())
       .then((data) => {
-        setArticles([data.article]);
-        setLoader(false);
+        return setCurrentArticle(data.article);
       });
+    return currentArticle;
   }
   function editFlag() {
     setFlag(!flag);
+    localStorage.setItem('auth', JSON.stringify(!flag));
   }
   function editName(value) {
     setCurrentName(value);
   }
+  function deleteCurrentArticle() {
+    setCurrentArticle();
+  }
   return (
     <div className="App">
-      <Header flag={flag} editFlag={editFlag} currentName={currentName} />
+      <Header editFlag={editFlag} currentName={currentName} />
       <Routes>
         <Route
           path="/"
@@ -73,11 +60,10 @@ const App = () => {
           element={
             <ArticlesList
               articles={articles}
-              page={currentPage}
-              editPage={editPage}
-              data={allArticles}
-              loader={loader}
+              gettingCurrentArticle={gettingCurrentArticle}
               currentArticle={currentArticle}
+              deleteCurrentArticle={deleteCurrentArticle}
+              allArticles={allArticles}
             />
           }
         />
@@ -87,28 +73,30 @@ const App = () => {
           element={
             <ArticlesList
               articles={articles}
-              page={currentPage}
-              editPage={editPage}
-              data={allArticles}
-              loader={loader}
+              gettingCurrentArticle={gettingCurrentArticle}
               currentArticle={currentArticle}
+              deleteCurrentArticle={deleteCurrentArticle}
+              allArticles={allArticles}
             />
           }
         />
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/sign-in" element={<SignIn editFlag={editFlag} />} />
+        <Route path="/articles/:id" exec element={<CurrentArticle currentArticle={currentArticle} />} />
         <Route
-          path="articles/:id"
-          exec
+          path="/new-article"
           element={
-            <ArticlesList
-              articles={articles}
-              page={currentPage}
-              editPage={editPage}
-              data={allArticles}
-              loader={loader}
-              currentArticle={currentArticle}
-            />
+            <PrivateRoute>
+              <NewArticle gettingCurrentArticle={gettingCurrentArticle} flagForForm={true} />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/articles/:id/edit"
+          element={
+            <PrivateRoute>
+              <NewArticle gettingCurrentArticle={gettingCurrentArticle} flagForForm={false} />
+            </PrivateRoute>
           }
         />
         <Route path="/profile" element={<EditProfile editName={editName} />} />

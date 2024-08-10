@@ -1,0 +1,40 @@
+.tag__container {
+  display: flex;
+  gap: 17px;
+}
+.tag {
+  width: 300px;
+  height: 40px;
+  border: 1px solid #D9D9D9;
+  border-radius: 3px;
+  margin-top: 5px;
+  font-size: 16px;
+  box-sizing: border-box;
+  font-family: Roboto-regular;
+  padding-left: 10px;
+}
+.delete {
+  width: 120px;
+  height: 40px;
+  border: 1px solid #F5222D;
+  color: #F5222D;
+  border-radius: 3px;
+  margin-top: 5px;
+  font-size: 14px;
+  box-sizing: border-box;
+  background-color: white;
+}
+.add {
+  width: 120px;
+  height: 40px;
+  border: 1px solid #1890FF;
+  color: #1890FF;
+  border-radius: 3px;
+  margin-top: 5px;
+  font-size: 14px;
+  box-sizing: border-box;
+  background-color: white;
+}
+.add__none {
+  display: none;
+}

@@ -5,13 +5,23 @@ import { v4 as uuidv4 } from 'uuid';
 import classes from './ArticlesList.module.scss';
 import Article from './Article/Article';
 
-const ArticlesList = ({ articles, page, editPage, data, loader, currentArticle }) => {
+const ArticlesList = ({
+  articles,
+  gettingCurrentArticle,
+  // editPage,
+  // page,
+  currentArticle,
+  deleteCurrentArticle,
+  allArticles,
+}) => {
   const progressBar = useRef(null);
   const loadedRef = useRef(0);
   const [intervals, setIntervals] = useState();
-  useEffect(() => {
-    setIntervals(() => setInterval(() => increase(), 10));
-  }, []);
+  // const [allArticles, setAllArticles] = useState([]);
+  const [articlesList, setArticles] = useState(articles);
+  const [loader, setLoader] = useState(true);
+  const [page, setPage] = useState(1);
+  useEffect(() => setIntervals(() => setInterval(() => increase(), 10)), []);
   useEffect(() => {
     if (loader === false) {
       loadedRef.current = 100;
@@ -23,6 +33,19 @@ const ArticlesList = ({ articles, page, editPage, data, loader, currentArticle }
       setIntervals(() => setInterval(() => increase(), 10));
     }
   }, [loader]);
+  useEffect(() => {
+    setLoader(true);
+    fetch(`https://api.realworld.io/api/articles?limit=5&offset=${(page - 1) * 5}`)
+      .then((response) => response.json())
+      .then((data) => {
+        setArticles(data.articles.slice(0, 5));
+        setTimeout(() => {
+          setLoader(false);
+        }, 150);
+      });
+    deleteCurrentArticle();
+  }, []);
+  // useEffect(() => console.log(page), [page]);
   function increase() {
     if (loadedRef.current < 100) {
       loadedRef.current = loadedRef.current + 2;
@@ -36,6 +59,16 @@ const ArticlesList = ({ articles, page, editPage, data, loader, currentArticle }
       }, 25);
     }
     return loadedRef.current;
+  }
+  function editPage(e) {
+    setLoader(true);
+    setPage(e);
+    fetch(`https://api.realworld.io/api/articles?limit=5&offset=${(e - 1) * 5}`)
+      .then((response) => response.json())
+      .then((data) => {
+        setArticles(data.articles);
+        setLoader(false);
+      });
   }
   return (
     <main className={classes.main}>
@@ -57,23 +90,23 @@ const ArticlesList = ({ articles, page, editPage, data, loader, currentArticle }
       ) : (
         <>
           <ul className={classes.main__container}>
-            {articles.map((o) => {
+            {articlesList.map((o) => {
               return (
-                // <Link to={`/articles/${i}`} key={i} style={{ textDecoration: 'none' }}>
                 <div className={classes.main__element} key={uuidv4()}>
-                  {/* <Link to={`/articles/${i}`} key={i} style={{ textDecoration: 'none' }}> */}
                   <Article
                     className={classes.main__element}
                     article={o}
-                    length={articles.length}
+                    length={articlesList.length}
+                    gettingCurrentArticle={gettingCurrentArticle}
                     currentArticle={currentArticle}
                   />
-                  {/* </Link> */}
                 </div>
               );
             })}
           </ul>
-          {articles.length > 1 && <Pagination total={data.length * 2} current={page} onChange={(e) => editPage(e)} />}
+          {articles.length > 1 && (
+            <Pagination total={allArticles.length * 2} current={page} onChange={(e) => editPage(e)} />
+          )}
         </>
       )}
     </main>

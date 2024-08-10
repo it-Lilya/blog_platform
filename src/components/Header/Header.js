@@ -4,8 +4,7 @@ import { Link } from 'react-router-dom';
 import classes from './Header.module.scss';
 import { UserHeader } from './UserHeader/UserHeader';
 
-const Header = ({ flag, editFlag, currentName }) => {
-  console.log(flag);
+const Header = ({ editFlag, currentName }) => {
   return (
     <header className={classes.header}>
       <div className={classes.header__container}>

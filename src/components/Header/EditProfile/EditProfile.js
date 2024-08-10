@@ -71,7 +71,7 @@ const EditProfile = ({ editName }) => {
               className={`${classes.edit__input} ${errors.username ? classes.edit__input__warn : ''}`}
               type="text"
               placeholder="Username"
-              minLength={0}
+              minLength={5}
               {...register('username', {
                 required: 'Username',
                 pattern: {
@@ -134,9 +134,9 @@ const EditProfile = ({ editName }) => {
                   value: /^(https?:\/\/)?([^\s$.?#].[^\s]*)$/i,
                   message: 'The URL is incorrect',
                 },
-                validate: {
-                  notEmpty: (value) => value.trim() !== '' || 'The URL is incorrect',
-                },
+                // validate: {
+                //   notEmpty: (value) => value.trim() !== '' || 'The URL is incorrect',
+                // },
               })}
             />
             {errors.image && <span className={classes.edit__warning}>{errors.image.message}</span>}

@@ -10,57 +10,38 @@
   width: 75%;
 }
 .article__title__header {
-  // display: inline-block;
-  // align-items: start;
-  position: relative;
+  display: flex;
+  // gap: -10px;
+  justify-content: flex-start;
+  align-items: flex-start;
 }
 .article__title {
   color: #1890FF;
   font-size: 20px;
   display: inline-block;
-  // border: 1px solid purple;
   max-width: 85%;
 }
-// .article__classes {
-//   // display: flex;
-//   align-items: center;
-//   justify-items: center;
-//   align-items: end;
-//   display: relative;
-//   top: 10px;
-//   // border: 1px solid green;
-//   max-width: 10%;
-//   border: 1px solid green;
-// }
 .article__likes {
   font-size: 12px;
-  position: absolute;
-  top: 5px;
-  // // max-width: 55px;
-  // border: 1px solid green;
-  right: 4%;
-  // margin-left: 20px;
-  // border: 1px solid green;
+  color: rgba(0, 0, 0, 0.5);
+  margin-right: auto;
+  display: inline-block;
+  width: 50px;
+  margin-left: 10px;
+  // position: absolute;
+  // right: auto;
+  // margin-right: -10px;
+  // margin-right: 10px;
+  margin-top: 5px;
+  padding-left: 20px;
 }
-.article__likes::after {
+.article__likes::before {
   position: absolute;
   content: '';
-  top: 0;
-  right: 21px;
   width: 16px;
   height: 16px;
   background-image: url('../../../../heart.png');
-  // width: 16px;
-  // height: 16px;
-  // background-image: url('../../../../heart.png');
-  // background-repeat: no-repeat;
-  // background-position: center;
-  // margin-right: 5px;
-  // // margin-left: 10px;
-  // margin-top: 5px;
-  // z-index: 2;
-  // position: absolute;
-  // margin-right: 20px;
+  margin-left: -20px;
 }
 .heart {
   min-width: 16px;
@@ -88,7 +69,7 @@
 }
 .article__text {
   font-size: 12px;
-  max-height: 45px;
+  // max-height: 45px;
   overflow-y: scroll;
   line-height: 22px;
 }
@@ -125,10 +106,131 @@
   height: 46px;
   border-radius: 50%;
 }
-// .header {
-//   color: blue;
-//   font-family: sans-serif;
-// }
 .article__read_more {
-  margin-bottom: 260px;
+  margin-bottom: 160px;
+}
+.main__container {
+  min-height: 100vh;
+  background-color: #EBEEF3;
+  margin: 0;
+  padding: 0;
+  border: 1px solid transparent;
+}
+.one__article__container {
+  width: 65.13%;
+  margin: auto;
+  margin-top: 26px;
+  margin-bottom: 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+  background-color: white;
+}
+.progress {
+  height: 7px;
+  position: relative !important;
+  padding: 0;
+  margin: 0;
+}
+.progress__bar {
+  height: 7px;
+  position: absolute;
+  z-index: 2;
+  background-color: #4096ff;
+}
+.control__container {
+  // border: 1px solid red;
+  margin-top: 20px;
+  // height: 100px;
+  // width: 200px;
+  display: flex;
+  gap: 12px;
+
+  position: relative;
+}
+.control__delete {
+  width: 78px;
+  height: 31px;
+  border: 1px solid #F5222D;
+  color: #F5222D;
+  border-radius: 3px;
+  margin-top: 5px;
+  font-size: 16px;
+  line-height: 24px;
+  box-sizing: border-box;
+  background-color: white;
+}
+.control__edit {
+  display: inline-block;
+  width: 65px;
+  height: 31px;
+  border: 1px solid #52C41A;
+  color: #52C41A;
+  border-radius: 3px;
+  margin-top: 5px;
+  font-size: 14px;
+  box-sizing: border-box;
+  background-color: white;
+  font-size: 16px;
+  line-height: 24px;
+  text-decoration: none;
+  text-align: center;
+  padding-top: 3px;
+}
+.modal {
+  display: none;
+  width: 240px;
+  height: 104px;
+  background-color: white;
+  position: absolute;
+  left: 55%;
+  top: 5px;
+  box-shadow: -1px -1px 7px 0px rgba(34, 60, 80, 0.2);
+  border-radius: 4px;
+  padding: 16px 12px;
+  box-sizing: border-box;
+}
+.modal::after {
+  position: absolute;
+  content: "";
+  border: 8px solid transparent;
+  border-right: 6px solid white;
+  left: -12px;
+  top: 7px;
+  text-shadow: -1px -1px 7px 0px rgba(34, 60, 80, 0.2);
+  z-index: 2;
+}
+.modal__container {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.modal__image {
+  width: 16px;
+  height: 16px;
+  background-image: url('../../../../exclamation-circle.png');
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.modal__text__warn {
+  padding: 0;
+  margin: 0;
+  color: #595959;
+  font-size: 14px;
+  line-height: 22px;
+  // font-family: Regular;
+}
+.modal__confirmation {
+  width: 80px;
+  display: flex;
+  justify-content: space-between;
+  margin-left: auto;
+}
+.modal__confirmation__no {
+  width: 34px;
+  height: 24px;
+}
+.modal__confirmation__yes {
+  width: 39px;
+  height: 24px;
 }

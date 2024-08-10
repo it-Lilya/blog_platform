@@ -5,7 +5,9 @@ import classes from './UserHeader.module.scss';
 export const UserHeader = ({ editFlag, currentName }) => {
   return (
     <div className={classes.container}>
-      <Link className={classes.create}>Create article</Link>
+      <Link to="/new-article" className={classes.create}>
+        Create article
+      </Link>
       <Link to="/profile" className={classes.author}>
         <p className={classes.author__name}>{currentName}</p>
         <img className={classes.author__image} src={JSON.parse(localStorage.getItem('image'))}></img>

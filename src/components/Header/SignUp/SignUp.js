@@ -13,7 +13,14 @@ const SignUp = () => {
     handleSubmit,
     formState: { errors },
     getValues,
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      username: '',
+      email: '',
+      password: '',
+      repeatPassword: '',
+    },
+  });
   function createWarnElem(text) {
     const warn = document.createElement('span');
     warn.className = classes.registration__warning;
@@ -22,6 +29,13 @@ const SignUp = () => {
   }
   const onSubmit = (data) => {
     if (check) {
+      if (document.querySelectorAll('input[type="checkbox"]')[0].parentElement.querySelector('span')) {
+        document
+          .querySelectorAll('input[type="checkbox"]')[0]
+          .parentElement.removeChild(
+            document.querySelectorAll('input[type="checkbox"]')[0].parentElement.querySelector('span')
+          );
+      }
       try {
         fetch('https://api.realworld.io/api/users', {
           method: 'POST',
@@ -40,7 +54,10 @@ const SignUp = () => {
             if (response.ok) {
               return response.json();
             } else {
-              throw new Error('User already exists');
+              if (response.status === 422) {
+                return errFunc();
+              }
+              // throw new Error('User already exists');
             }
           })
           .then((data) => {
@@ -51,7 +68,7 @@ const SignUp = () => {
               localStorage.setItem('user', JSON.stringify(data.user));
               setTimeout(() => {
                 navigate('/');
-              }, 1000);
+              });
             }
           })
           .catch((error) => console.error('Error:', error));
@@ -59,22 +76,18 @@ const SignUp = () => {
         console.error('Error:', error);
       }
     } else {
-      editCheck();
+      if (!document.querySelectorAll('input[type="checkbox"]')[0].parentElement.querySelector('span')) {
+        document
+          .querySelectorAll('input[type="checkbox"]')[0]
+          .parentElement.appendChild(createWarnElem('Consent to the processing of personal data is required!'));
+      }
     }
   };
-  const editCheck = () => {
-    if (!check && document.querySelectorAll('input[type="checkbox"]')[0].parentElement.querySelector('span')) {
-      document
-        .querySelectorAll('input[type="checkbox"]')[0]
-        .parentElement.removeChild(
-          document.querySelectorAll('input[type="checkbox"]')[0].parentElement.querySelector('span')
-        );
-    } else {
-      document
-        .querySelectorAll('input[type="checkbox"]')[0]
-        .parentElement.appendChild(createWarnElem('I agree to the processing of my personal information'));
-    }
-  };
+  function errFunc() {
+    document
+      .querySelector('input[type="checkbox"]')
+      .parentElement.appendChild(createWarnElem('This user is already registered!'));
+  }
   return (
     <div className={classes.registration__main}>
       <div className={classes.registration__container}>
@@ -156,10 +169,7 @@ const SignUp = () => {
               className={classes.registration__checkbox}
               type="checkbox"
               checked={check}
-              onClick={() => {
-                setCheck(!check);
-                editCheck();
-              }}
+              onChange={() => setCheck(!check)}
             />
             I agree to the processing of my personal information
           </label>
