@@ -87,7 +87,7 @@ const App = () => {
         />
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/sign-in" element={<SignIn editFlag={editFlag} />} />
-        <Route path="/articles/:id" exec element={<CurrentArticle currentArticle={currentArticle} />} />
+        <Route path="/articles/:id" element={<CurrentArticle currentArticle={currentArticle} />} />
         <Route
           path="/articles/new-article"
           element={
@@ -104,7 +104,7 @@ const App = () => {
             </PrivateRoute>
           }
         />
-        <Route path="/profile" element={<EditProfile editName={editName} />} />
+        <Route path="/articles/profile" element={<EditProfile editName={editName} />} />
       </Routes>
     </div>
   );
