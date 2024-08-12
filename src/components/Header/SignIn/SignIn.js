@@ -61,7 +61,7 @@ const SignIn = ({ editFlag }) => {
               localStorage.setItem('auth', JSON.stringify(true));
               editFlag();
               setTimeout(() => {
-                navigate('/');
+                navigate('/articles');
               }, 100);
             }
           });

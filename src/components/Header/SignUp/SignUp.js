@@ -67,7 +67,7 @@ const SignUp = () => {
               localStorage.setItem('image', JSON.stringify(data.user.image));
               localStorage.setItem('user', JSON.stringify(data.user));
               setTimeout(() => {
-                navigate('/');
+                navigate('/articles');
               });
             }
           })

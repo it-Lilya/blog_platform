@@ -8,7 +8,7 @@ const Header = ({ editFlag, currentName }) => {
   return (
     <header className={classes.header}>
       <div className={classes.header__container}>
-        <Link to="/" className={classes.header__title}>
+        <Link to="/articles" className={classes.header__title}>
           Realworld Blog
         </Link>
         <div className={classes.header__login_container}>

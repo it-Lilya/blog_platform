@@ -11,8 +11,13 @@ const CurrentArticle = ({ currentArticle }) => {
   const loadedRef = useRef(0);
   const [intervals, setIntervals] = useState();
   const [control, setControl] = useState(false);
+  const [currentLike, setCurrentLike] = useState(classes.article__like__btn);
+  const [favorite, setFavorite] = useState();
+  const [count, setCount] = useState();
   const navigate = useNavigate();
-  useEffect(() => setIntervals(() => setInterval(() => increase(), 10)), []);
+  useEffect(() => {
+    setIntervals(() => setInterval(() => increase(), 10));
+  }, []);
   useEffect(() => {
     if (loader === false) {
       loadedRef.current = 100;
@@ -26,10 +31,16 @@ const CurrentArticle = ({ currentArticle }) => {
   }, [loader]);
   useEffect(() => {
     if (currentArticle) {
+      setCount(currentArticle.favoritesCount);
       const formattedText = currentArticle.body.replace(/\\n/g, '\n\n');
       setMarkdownText(formattedText);
+      if (currentArticle.favorited === true && JSON.parse(localStorage.getItem('auth')) === true) {
+        setCurrentLike(classes.article__like__btn__active);
+        setFavorite(currentArticle.favorited);
+      } else {
+        setCurrentLike(classes.article__like__btn);
+      }
       if (JSON.parse(localStorage.getItem('username')) === currentArticle.author.username) {
-        // console.log(currentArticle);
         setControl(false);
       } else {
         setControl(true);
@@ -37,9 +48,6 @@ const CurrentArticle = ({ currentArticle }) => {
       setLoader(false);
     }
   }, [currentArticle]);
-  // useEffect(() => {
-  //   console.log(control);
-  // }, [control]);
   function increase() {
     if (loadedRef.current < 100) {
       loadedRef.current = loadedRef.current + 2;
@@ -84,11 +92,50 @@ const CurrentArticle = ({ currentArticle }) => {
       }).then((res) => {
         if (res.ok) {
           document.querySelector(`.${classes.modal}`).style.display = 'none';
-          navigate('/');
+          navigate('/articles');
         }
       });
     }
   }
+  const like = () => {
+    setFavorite(!favorite);
+    if (JSON.parse(localStorage.getItem('auth')) === true) {
+      setCurrentLike(favorite ? classes.article__like__btn : classes.article__like__btn__active);
+      if (!favorite === true) {
+        setCount(count + 1);
+        fetch(`https://api.realworld.io/api/articles/${currentArticle.slug}/favorite`, {
+          method: 'post',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Token ${JSON.parse(localStorage.getItem('token'))}`,
+          },
+        }).then(async (res) => {
+          if (res.ok) {
+            return res.json();
+          } else {
+            const data = await res.json();
+            throw new Error(data.message);
+          }
+        });
+      } else {
+        setCount(count - 1);
+        fetch(`https://api.realworld.io/api/articles/${currentArticle.slug}/favorite`, {
+          method: 'delete',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Token ${JSON.parse(localStorage.getItem('token'))}`,
+          },
+        }).then(async (res) => {
+          if (res.ok) {
+            return res.json();
+          } else {
+            const data = await res.json();
+            throw new Error(data.message);
+          }
+        });
+      }
+    }
+  };
   return (
     <div className={classes.main__container}>
       {loader ? (
@@ -114,7 +161,10 @@ const CurrentArticle = ({ currentArticle }) => {
                 <a className={classes.article__header}>
                   <div className={classes.article__title}>{currentArticle.title}</div>
                 </a>
-                <div className={classes.article__likes}>{currentArticle.favoritesCount}</div>
+                <div className={classes.article__like__favorite}>
+                  <button type="button" className={currentLike} onClick={(e) => like(e)}></button>
+                  <div className={classes.article__likes}>{count}</div>
+                </div>
               </div>
               <div className={classes.article__tags}>
                 {currentArticle.tagList.map((tag, index) => (
@@ -158,7 +208,9 @@ const CurrentArticle = ({ currentArticle }) => {
                     </div>
                     <div className={classes.modal__confirmation} onClick={(e) => choice(e)}>
                       <Button className={classes.modal__confirmation__no}>No</Button>
-                      <Button className={classes.modal__confirmation__yes}>Yes</Button>
+                      <Button className={classes.modal__confirmation__yes} type="primary">
+                        Yes
+                      </Button>
                     </div>
                   </div>
                 </div>

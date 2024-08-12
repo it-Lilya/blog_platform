@@ -11,48 +11,42 @@
 }
 .article__title__header {
   display: flex;
-  // gap: -10px;
   justify-content: flex-start;
   align-items: flex-start;
 }
+
 .article__title {
   color: #1890FF;
   font-size: 20px;
-  display: inline-block;
-  max-width: 85%;
+  display: inline;
+  text-decoration: none;
+}
+.article__like__favorite {
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding-top: 4px;
+}
+.article__like__btn,
+.article__like__btn__active  {
+  width: 16px;
+  height: 16px;
+  border: none;
+  background-color: transparent;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.article__like__btn__active {
+  background-image: url('../../../../path4.svg');
+}
+.article__like__btn {
+  background-image: url('../../../../heart\ 1.svg');
 }
 .article__likes {
   font-size: 12px;
   color: rgba(0, 0, 0, 0.5);
-  margin-right: auto;
-  display: inline-block;
-  width: 50px;
-  margin-left: 10px;
-  // position: absolute;
-  // right: auto;
-  // margin-right: -10px;
-  // margin-right: 10px;
-  margin-top: 5px;
-  padding-left: 20px;
-}
-.article__likes::before {
-  position: absolute;
-  content: '';
-  width: 16px;
-  height: 16px;
-  background-image: url('../../../../heart.png');
-  margin-left: -20px;
-}
-.heart {
-  min-width: 16px;
-  min-height: 16px;
-  background-image: url('../../../../heart.png');
-  background-repeat: no-repeat;
-  background-position: center;
-  margin-right: 5px;
-  // margin-left: 10px;
-  margin-top: 5px;
-
+  // width: 50px;
 }
 .article__tags {
   margin-top: 10px;
@@ -69,7 +63,6 @@
 }
 .article__text {
   font-size: 12px;
-  // max-height: 45px;
   overflow-y: scroll;
   line-height: 22px;
 }
@@ -99,7 +92,6 @@
   font-size: 12px;
 }
 .article__author__avatar {
-  // background-image: url('../../../../Rectangle.svg');
   background-repeat: no-repeat;
   background-position: center;
   width: 46px;
@@ -139,10 +131,7 @@
   background-color: #4096ff;
 }
 .control__container {
-  // border: 1px solid red;
   margin-top: 20px;
-  // height: 100px;
-  // width: 200px;
   display: flex;
   gap: 12px;
 
@@ -218,7 +207,6 @@
   color: #595959;
   font-size: 14px;
   line-height: 22px;
-  // font-family: Regular;
 }
 .modal__confirmation {
   width: 80px;

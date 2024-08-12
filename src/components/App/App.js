@@ -1,9 +1,6 @@
-// eslint-disable-next-line import/order
 import React, { useEffect, useState } from 'react';
-
-import './App.css';
-
 import { Routes, Route } from 'react-router-dom';
+import './App.css';
 
 import Header from '../Header/Header';
 import ArticlesList from '../ArticlesList/ArticlesList';
@@ -16,7 +13,6 @@ import SignUp from './../Header/SignUp/SignUp';
 import SignIn from './../Header/SignIn/SignIn';
 
 const App = () => {
-  const [articles, setArticles] = useState([]);
   const [flag, setFlag] = useState(false);
   const [currentName, setCurrentName] = useState(JSON.parse(localStorage.getItem('username')));
   const [currentArticle, setCurrentArticle] = useState();
@@ -26,18 +22,29 @@ const App = () => {
       .then((response) => response.json())
       .then((data) => {
         setAllArticles(data.articles);
-        setArticles(data.articles.slice(0, 5));
       });
   }, []);
   useEffect(() => {
     setCurrentName(JSON.parse(localStorage.getItem('username')));
   });
   function gettingCurrentArticle(e) {
-    fetch(`https://api.realworld.io/api/articles/${e}`)
-      .then((res) => res.json())
-      .then((data) => {
-        return setCurrentArticle(data.article);
-      });
+    if (JSON.parse(localStorage.getItem('auth')) === true) {
+      fetch(`https://api.realworld.io/api/articles/${e}`, {
+        headers: {
+          Authorization: `Token ${JSON.parse(localStorage.getItem('token'))}`,
+        },
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          return setCurrentArticle(data.article);
+        });
+    } else {
+      fetch(`https://api.realworld.io/api/articles/${e}`)
+        .then((res) => res.json())
+        .then((data) => {
+          return setCurrentArticle(data.article);
+        });
+    }
     return currentArticle;
   }
   function editFlag() {
@@ -59,9 +66,8 @@ const App = () => {
           exec
           element={
             <ArticlesList
-              articles={articles}
               gettingCurrentArticle={gettingCurrentArticle}
-              currentArticle={currentArticle}
+              // currentArticle={currentArticle}
               deleteCurrentArticle={deleteCurrentArticle}
               allArticles={allArticles}
             />
@@ -72,9 +78,8 @@ const App = () => {
           exec
           element={
             <ArticlesList
-              articles={articles}
               gettingCurrentArticle={gettingCurrentArticle}
-              currentArticle={currentArticle}
+              // currentArticle={currentArticle}
               deleteCurrentArticle={deleteCurrentArticle}
               allArticles={allArticles}
             />
@@ -84,7 +89,7 @@ const App = () => {
         <Route path="/sign-in" element={<SignIn editFlag={editFlag} />} />
         <Route path="/articles/:id" exec element={<CurrentArticle currentArticle={currentArticle} />} />
         <Route
-          path="/new-article"
+          path="/articles/new-article"
           element={
             <PrivateRoute>
               <NewArticle gettingCurrentArticle={gettingCurrentArticle} flagForForm={true} />

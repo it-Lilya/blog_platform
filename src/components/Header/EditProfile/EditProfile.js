@@ -56,7 +56,7 @@ const EditProfile = ({ editName }) => {
         editName(formData.username);
       });
     setTimeout(() => {
-      navigate('/');
+      navigate('/articles');
     }, 100);
   };
 
