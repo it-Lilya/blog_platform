@@ -6,7 +6,6 @@ export const UserHeader = ({ editFlag, currentName }) => {
   const location = useLocation();
   const basePath = location.pathname === '/' ? '/articles' : location.pathname;
   const firstSegment = basePath.split('/')[1];
-  console.log(firstSegment);
   return (
     <div className={classes.container}>
       <Link to={`${firstSegment}/new-article`} className={classes.create}>

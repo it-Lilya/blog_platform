@@ -70,7 +70,6 @@ const SignIn = ({ editFlag }) => {
       }
     } else {
       if (data.email.trim().length === 0) {
-        // console.log(document.querySelector('input[type="email"]'));
         if (!document.querySelector('input[type="email"]').parentElement.querySelector('span')) {
           document.querySelector('input[type="email"]').parentElement.appendChild(createWarnElem('Enter login'));
         }

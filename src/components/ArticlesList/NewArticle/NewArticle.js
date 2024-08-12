@@ -34,9 +34,7 @@ const NewArticle = ({ gettingCurrentArticle, flagForForm }) => {
     }
   }, []);
   const submitForm = (data) => {
-    // console.log(JSON.parse(localStorage.getItem('article')).slug);
     if (!flagForForm) {
-      // console.log(data);
       fetch(`https://api.realworld.io/api/articles/${JSON.parse(localStorage.getItem('article')).slug}`, {
         method: 'PUT',
         headers: {
@@ -45,13 +43,7 @@ const NewArticle = ({ gettingCurrentArticle, flagForForm }) => {
         },
         body: JSON.stringify({ article: data }),
       })
-        .then((res) => {
-          // if (res.ok) {
-          //   document.querySelector(`.${classes.modal}`).style.display = 'none';
-          //   // navigate('/');
-          // }
-          return res.json();
-        })
+        .then((res) => res.json())
         .then((data) => {
           if (data) {
             localStorage.setItem('article', JSON.stringify(data.article));
