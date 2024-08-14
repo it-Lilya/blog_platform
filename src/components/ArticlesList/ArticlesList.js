@@ -55,7 +55,11 @@ const ArticlesList = ({ articles = [], gettingCurrentArticle, deleteCurrentArtic
       }
     } else {
       if (pageNumber === 1) {
-        fetch('https://api.realworld.io/api/articles')
+        fetch('https://api.realworld.io/api/articles', {
+          headers: {
+            Accept: 'application/json',
+          },
+        })
           .then((response) => response.json())
           .then((data) => {
             setArticles(data.articles.slice(0, 5));

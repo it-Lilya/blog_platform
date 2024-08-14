@@ -18,7 +18,11 @@ const App = () => {
   const [currentArticle, setCurrentArticle] = useState();
   const [allArticles, setAllArticles] = useState([]);
   useEffect(() => {
-    fetch('https://api.realworld.io/api/articles')
+    fetch('https://api.realworld.io/api/articles', {
+      headers: {
+        Accept: 'application/json',
+      },
+    })
       .then((response) => response.json())
       .then((data) => {
         setAllArticles(data.articles);
