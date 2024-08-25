@@ -1,1 +1,1 @@
-[vercel](https://blog-platform-woad.vercel.app/)
+[vercel](https://blog-platform-ten-tawny.vercel.app)
