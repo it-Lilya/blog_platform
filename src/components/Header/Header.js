@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import classes from './Header.module.scss';
 import { UserHeader } from './UserHeader/UserHeader';
 
-const Header = ({ editFlag, currentName }) => {
+const Header = ({ currentName, editFlagFalse, flag }) => {
   return (
     <header className={classes.header}>
       <div className={classes.header__container}>
@@ -12,8 +12,8 @@ const Header = ({ editFlag, currentName }) => {
           Realworld Blog
         </Link>
         <div className={classes.header__login_container}>
-          {JSON.parse(localStorage.getItem('auth')) ? (
-            <UserHeader editFlag={editFlag} currentName={currentName} />
+          {flag ? (
+            <UserHeader editFlagFalse={editFlagFalse} currentName={currentName} />
           ) : (
             <>
               <Link to="/sign-in" className={classes.header__signIn}>

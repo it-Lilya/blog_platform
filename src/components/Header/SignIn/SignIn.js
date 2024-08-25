@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 
 import classes from './SignIn.module.scss';
 
-const SignIn = ({ editFlag }) => {
+const SignIn = ({ editFlagTrue }) => {
   const navigate = useNavigate();
   const { register, handleSubmit } = useForm({
     defaultValues: {
@@ -13,12 +13,14 @@ const SignIn = ({ editFlag }) => {
       password: '',
     },
   });
+
   function createWarnElem(text) {
     const warn = document.createElement('span');
     warn.className = classes.entry__warning;
     warn.textContent = text;
     return warn;
   }
+
   function submitForm(data) {
     if (document.querySelector('input[type="email"]').parentElement.querySelector('span')) {
       document
@@ -59,7 +61,8 @@ const SignIn = ({ editFlag }) => {
               localStorage.setItem('image', JSON.stringify(data.user.image));
               localStorage.setItem('username', JSON.stringify(data.user.username.trim()));
               localStorage.setItem('auth', JSON.stringify(true));
-              editFlag();
+              localStorage.setItem('token', JSON.stringify(data.user.token));
+              editFlagTrue();
               setTimeout(() => {
                 navigate('/articles');
               }, 100);
@@ -81,11 +84,13 @@ const SignIn = ({ editFlag }) => {
       }
     }
   }
+
   function errFunc() {
     document
       .querySelector('input[type="password"]')
       .parentElement.appendChild(createWarnElem('This user is not registered!'));
   }
+
   return (
     <div className={classes.entrance__main}>
       <div className={classes.entrance__container}>

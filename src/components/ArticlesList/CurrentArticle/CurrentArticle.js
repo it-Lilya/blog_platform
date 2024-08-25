@@ -7,17 +7,19 @@ import classes from '../Article/Article.module.scss';
 const CurrentArticle = ({ currentArticle }) => {
   const [markdownText, setMarkdownText] = useState('');
   const [loader, setLoader] = useState(true);
-  const progressBar = useRef(null);
-  const loadedRef = useRef(0);
   const [intervals, setIntervals] = useState();
   const [control, setControl] = useState(false);
   const [currentLike, setCurrentLike] = useState(classes.article__like__btn);
-  const [favorite, setFavorite] = useState();
   const [count, setCount] = useState();
+  const progressBar = useRef(null);
+  const loadedRef = useRef(0);
   const navigate = useNavigate();
+
   useEffect(() => {
+    window.scrollTo(0, 0);
     setIntervals(() => setInterval(() => increase(), 10));
   }, []);
+
   useEffect(() => {
     if (loader === false) {
       loadedRef.current = 100;
@@ -29,16 +31,18 @@ const CurrentArticle = ({ currentArticle }) => {
       setIntervals(() => setInterval(() => increase(), 10));
     }
   }, [loader]);
+
   useEffect(() => {
     if (currentArticle) {
       setCount(currentArticle.favoritesCount);
       const formattedText = currentArticle.body.replace(/\\n/g, '\n\n');
       setMarkdownText(formattedText);
-      if (currentArticle.favorited === true && JSON.parse(localStorage.getItem('auth')) === true) {
-        setCurrentLike(classes.article__like__btn__active);
-        setFavorite(currentArticle.favorited);
-      } else {
-        setCurrentLike(classes.article__like__btn);
+      if (JSON.parse(localStorage.getItem('auth'))) {
+        if (currentArticle.favorited === true) {
+          setCurrentLike(classes.article__like__btn__active);
+        } else {
+          setCurrentLike(classes.article__like__btn);
+        }
       }
       if (JSON.parse(localStorage.getItem('username')) === currentArticle.author.username) {
         setControl(false);
@@ -48,6 +52,7 @@ const CurrentArticle = ({ currentArticle }) => {
       setLoader(false);
     }
   }, [currentArticle]);
+
   function increase() {
     if (loadedRef.current < 100) {
       loadedRef.current = loadedRef.current + 2;
@@ -62,6 +67,7 @@ const CurrentArticle = ({ currentArticle }) => {
     }
     return loadedRef.current;
   }
+
   const formatPublication = (date) => {
     const dates = new Date(date);
     let month = dates.toLocaleString('en', { month: 'long' });
@@ -69,9 +75,11 @@ const CurrentArticle = ({ currentArticle }) => {
     let year = dates.toLocaleString('en', { year: 'numeric' });
     return `${month} ${day}, ${year}`;
   };
+
   function deletedArticle() {
     document.querySelector(`.${classes.modal}`).style.display = 'block';
   }
+
   function choice(e) {
     let currentBtn;
     if (e.target.tagName === 'BUTTON') {
@@ -92,50 +100,13 @@ const CurrentArticle = ({ currentArticle }) => {
       }).then((res) => {
         if (res.ok) {
           document.querySelector(`.${classes.modal}`).style.display = 'none';
+          window.scrollTo(0, 0);
           navigate('/articles');
         }
       });
     }
   }
-  const like = () => {
-    setFavorite(!favorite);
-    if (JSON.parse(localStorage.getItem('auth')) === true) {
-      setCurrentLike(favorite ? classes.article__like__btn : classes.article__like__btn__active);
-      if (!favorite === true) {
-        setCount(count + 1);
-        fetch(`https://api.realworld.io/api/articles/${currentArticle.slug}/favorite`, {
-          method: 'post',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Token ${JSON.parse(localStorage.getItem('token'))}`,
-          },
-        }).then(async (res) => {
-          if (res.ok) {
-            return res.json();
-          } else {
-            const data = await res.json();
-            throw new Error(data.message);
-          }
-        });
-      } else {
-        setCount(count - 1);
-        fetch(`https://api.realworld.io/api/articles/${currentArticle.slug}/favorite`, {
-          method: 'delete',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Token ${JSON.parse(localStorage.getItem('token'))}`,
-          },
-        }).then(async (res) => {
-          if (res.ok) {
-            return res.json();
-          } else {
-            const data = await res.json();
-            throw new Error(data.message);
-          }
-        });
-      }
-    }
-  };
+
   return (
     <div className={classes.main__container}>
       {loader ? (
@@ -162,7 +133,7 @@ const CurrentArticle = ({ currentArticle }) => {
                   <div className={classes.article__title}>{currentArticle.title}</div>
                 </a>
                 <div className={classes.article__like__favorite}>
-                  <button type="button" className={currentLike} onClick={(e) => like(e)}></button>
+                  <button type="button" className={currentLike}></button>
                   <div className={classes.article__likes}>{count}</div>
                 </div>
               </div>

@@ -2,8 +2,6 @@
   display: flex;
   justify-content: space-between;
   padding: 16px;
-  // list-style-type: none;
-  // text-decoration: none;
   color: black;
 }
 .article__container {
@@ -46,7 +44,6 @@
 .article__likes {
   font-size: 12px;
   color: rgba(0, 0, 0, 0.5);
-  // width: 50px;
 }
 .article__tags {
   margin-top: 10px;

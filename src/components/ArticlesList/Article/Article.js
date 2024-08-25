@@ -2,24 +2,52 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 import classes from './Article.module.scss';
+
 const Article = ({ article, length, gettingCurrentArticle }) => {
   const [classesDescription, setClassesDescription] = useState(classes.article__text);
   const [classesAuthor, setClassesAuthor] = useState(classes.article__author__container);
   const [currentLike, setCurrentLike] = useState(classes.article__like__btn);
   const [favorite, setFavorite] = useState();
   const [count, setCount] = useState(article.favoritesCount);
+
   useEffect(() => {
-    if (length === 1) {
+    if (localStorage.getItem('auth') === true) {
+      if (article.favorited) {
+        setFavorite(true);
+      } else {
+        setFavorite(false);
+      }
+      if (localStorage.getItem('auth') === 'true') {
+        updateLikeButton();
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (length === 1 && localStorage.getItem('auth') === 'true') {
       setClassesDescription(classes.article__text + ' ' + classes.article__text__one);
       setClassesAuthor(classes.article__author__container + ' ' + classes.article__author__one);
     }
-    setFavorite(article.favorited);
-    if (article.favorited === true && JSON.parse(localStorage.getItem('auth')) === true) {
+    updateLikeButton();
+  }, [length, article]);
+
+  const updateLikeButton = () => {
+    if (favorite) {
       setCurrentLike(classes.article__like__btn__active);
     } else {
       setCurrentLike(classes.article__like__btn);
     }
-  }, []);
+  };
+
+  useEffect(() => {
+    setFavorite(article.favorited);
+    setCurrentLike(article.favorited ? classes.article__like__btn__active : classes.article__like__btn);
+  }, [article]);
+
+  useEffect(() => {
+    setCurrentLike(favorite ? classes.article__like__btn__active : classes.article__like__btn);
+  }, [favorite]);
+
   const formatPublication = (date) => {
     const dates = new Date(date);
     let month = dates.toLocaleString('en', { month: 'long' });
@@ -27,45 +55,31 @@ const Article = ({ article, length, gettingCurrentArticle }) => {
     let year = dates.toLocaleString('en', { year: 'numeric' });
     return `${month} ${day}, ${year}`;
   };
-  const like = () => {
-    setFavorite(!favorite);
+
+  const like = async () => {
     if (JSON.parse(localStorage.getItem('auth')) === true) {
-      setCurrentLike(favorite ? classes.article__like__btn : classes.article__like__btn__active);
-      if (!favorite === true) {
-        setCount(count + 1);
-        fetch(`https://api.realworld.io/api/articles/${article.slug}/favorite`, {
-          method: 'post',
+      const method = favorite ? 'DELETE' : 'POST';
+      try {
+        const response = await fetch(`https://api.realworld.io/api/articles/${article.slug}/favorite`, {
+          method,
           headers: {
-            'Content-Type': 'application/json',
+            accept: 'application/json',
             Authorization: `Token ${JSON.parse(localStorage.getItem('token'))}`,
           },
-        }).then(async (res) => {
-          if (res.ok) {
-            return res.json();
-          } else {
-            const data = await res.json();
-            throw new Error(data.message);
-          }
         });
-      } else {
-        setCount(count - 1);
-        fetch(`https://api.realworld.io/api/articles/${article.slug}/favorite`, {
-          method: 'delete',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Token ${JSON.parse(localStorage.getItem('token'))}`,
-          },
-        }).then(async (res) => {
-          if (res.ok) {
-            return res.json();
-          } else {
-            const data = await res.json();
-            throw new Error(data.message);
-          }
-        });
+        if (!response.ok) {
+          const data = await response.json();
+          throw new Error(data.message);
+        }
+        setFavorite(!favorite);
+        setCount(favorite ? count - 1 : count + 1);
+        updateLikeButton();
+      } catch (error) {
+        console.error('Error updating favorite:', error);
       }
     }
   };
+
   return (
     <div className={classes.article}>
       <div className={classes.article__container}>

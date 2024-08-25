@@ -5,92 +5,74 @@ import { v4 as uuidv4 } from 'uuid';
 import classes from './ArticlesList.module.scss';
 import Article from './Article/Article';
 
-const ArticlesList = ({ articles = [], gettingCurrentArticle, deleteCurrentArticle, allArticles }) => {
+const ArticlesList = ({ articles = [], gettingCurrentArticle, deleteCurrentArticle, flag }) => {
   const progressBar = useRef(null);
-  const loadedRef = useRef(0);
-  const [intervals, setIntervals] = useState();
+  const [loaded, setLoaded] = useState(0);
   const [articlesList, setArticles] = useState(articles);
   const [loader, setLoader] = useState(true);
   const [page, setPage] = useState(localStorage.getItem('page') ? JSON.parse(localStorage.getItem('page')) : 1);
 
   useEffect(() => {
-    setIntervals(() => setInterval(increase, 10));
-    deleteCurrentArticle();
     fetchArticles(page);
-    return () => clearInterval(intervals);
+    deleteCurrentArticle();
   }, []);
 
   useEffect(() => {
     if (!loader) {
-      loadedRef.current = 100;
-      clearInterval(intervals);
+      setLoaded(100);
     }
   }, [loader]);
 
-  const fetchArticles = (pageNumber) => {
-    setLoader(true);
-    if (JSON.parse(localStorage.getItem('auth')) === true) {
-      if (pageNumber === 1) {
-        fetch('https://api.realworld.io/api/articles', {
-          headers: {
-            Authorization: `Token ${JSON.parse(localStorage.getItem('token'))}`,
-          },
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            setArticles(data.articles.slice(0, 5));
-            setTimeout(() => setLoader(false), 150);
-          });
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (loaded < 100) {
+        setLoaded((prev) => prev + 2);
       } else {
-        fetch(`https://api.realworld.io/api/articles?limit=5&offset=${(pageNumber - 1) * 5}`, {
-          headers: {
-            Authorization: `Token ${JSON.parse(localStorage.getItem('token'))}`,
-          },
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            setArticles(data.articles);
-            setTimeout(() => setLoader(false), 150);
-          });
+        clearInterval(interval);
       }
-    } else {
-      if (pageNumber === 1) {
-        fetch('https://api.realworld.io/api/articles', {
-          headers: {
-            Accept: 'application/json',
-          },
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            setArticles(data.articles.slice(0, 5));
-            setTimeout(() => setLoader(false), 150);
-          });
-      } else {
-        fetch(`https://api.realworld.io/api/articles?limit=5&offset=${(pageNumber - 1) * 5}`)
-          .then((response) => response.json())
-          .then((data) => {
-            setArticles(data.articles);
-            setTimeout(() => setLoader(false), 150);
-          });
-      }
+    }, 10);
+    return () => clearInterval(interval);
+  }, [loaded]);
+
+  useEffect(() => {
+    if (progressBar.current) {
+      progressBar.current.style.width = `${loaded}%`;
     }
+  }, [loaded]);
+
+  const fetchArticles = async (pageNumber) => {
+    setLoader(true);
+    const auth = localStorage.getItem('auth') && JSON.parse(localStorage.getItem('auth')) === true;
+    const url =
+      pageNumber === 1
+        ? 'https://api.realworld.io/api/articles'
+        : `https://api.realworld.io/api/articles?limit=5&offset=${(pageNumber - 1) * 5}`;
+
+    const res = await fetch(url, {
+      headers: auth
+        ? { Authorization: `Token ${JSON.parse(localStorage.getItem('token'))}` }
+        : { Accept: 'application/json' },
+    });
+    const data = await res.json();
+    if (pageNumber === 1) {
+      setArticles(data.articles.slice(0, 5));
+    } else {
+      setArticles(data.articles);
+    }
+    setLoader(false);
   };
 
-  const increase = () => {
-    if (loadedRef.current < 100) {
-      loadedRef.current += 2;
-      if (progressBar.current) {
-        progressBar.current.style.width = `${loadedRef.current}%`;
-      }
-    } else {
-      clearInterval(intervals);
-    }
-  };
   const editPage = (pageNumber) => {
     setPage(pageNumber);
     localStorage.setItem('page', pageNumber);
     fetchArticles(pageNumber);
   };
+
+  useEffect(() => {
+    setLoaded(0);
+    setLoader(true);
+  }, [flag]);
+
   return (
     <main className={classes.main}>
       {loader ? (
@@ -118,12 +100,17 @@ const ArticlesList = ({ articles = [], gettingCurrentArticle, deleteCurrentArtic
                   article={article}
                   length={articlesList.length}
                   gettingCurrentArticle={gettingCurrentArticle}
-                  // currentArticle={currentArticle}
                 />
               </div>
             ))}
           </ul>
-          {allArticles.length > 1 && <Pagination total={allArticles.length * 2} current={page} onChange={editPage} />}
+          {JSON.parse(localStorage.getItem('articlesLength')) > 1 && (
+            <Pagination
+              total={JSON.parse(localStorage.getItem('articlesLength') * 2)}
+              current={page}
+              onChange={editPage}
+            />
+          )}
         </>
       )}
     </main>

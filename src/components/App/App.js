@@ -12,27 +12,27 @@ import CurrentArticle from '../ArticlesList/CurrentArticle/CurrentArticle';
 import SignUp from './../Header/SignUp/SignUp';
 import SignIn from './../Header/SignIn/SignIn';
 
+fetch('https://api.realworld.io/api/articles', {
+  headers: {
+    Accept: 'application/json',
+  },
+})
+  .then((response) => response.json())
+  .then((data) => {
+    localStorage.setItem('articlesLength', JSON.stringify(data.articlesCount));
+  });
 const App = () => {
   const [flag, setFlag] = useState(false);
   const [currentName, setCurrentName] = useState(JSON.parse(localStorage.getItem('username')));
   const [currentArticle, setCurrentArticle] = useState();
-  const [allArticles, setAllArticles] = useState([]);
-  useEffect(() => {
-    fetch('https://api.realworld.io/api/articles', {
-      headers: {
-        Accept: 'application/json',
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setAllArticles(data.articles);
-      });
-  }, []);
   useEffect(() => {
     setCurrentName(JSON.parse(localStorage.getItem('username')));
   });
+  useEffect(() => {
+    setFlag(JSON.parse(localStorage.getItem('auth')));
+  }, []);
   function gettingCurrentArticle(e) {
-    if (JSON.parse(localStorage.getItem('auth')) === true) {
+    if (localStorage.getItem('auth') && JSON.parse(localStorage.getItem('auth')) === true) {
       fetch(`https://api.realworld.io/api/articles/${e}`, {
         headers: {
           Authorization: `Token ${JSON.parse(localStorage.getItem('token'))}`,
@@ -51,19 +51,27 @@ const App = () => {
     }
     return currentArticle;
   }
-  function editFlag() {
-    setFlag(!flag);
-    localStorage.setItem('auth', JSON.stringify(!flag));
+  function editFlagFalse() {
+    localStorage.setItem('auth', JSON.stringify(false));
+    setFlag(false);
   }
+
+  function editFlagTrue() {
+    localStorage.setItem('auth', JSON.stringify(true));
+    setFlag(true);
+  }
+
   function editName(value) {
     setCurrentName(value);
   }
+
   function deleteCurrentArticle() {
     setCurrentArticle();
   }
+
   return (
     <div className="App">
-      <Header editFlag={editFlag} currentName={currentName} />
+      <Header editFlagFalse={editFlagFalse} currentName={currentName} flag={flag} />
       <Routes>
         <Route
           path="/"
@@ -71,9 +79,8 @@ const App = () => {
           element={
             <ArticlesList
               gettingCurrentArticle={gettingCurrentArticle}
-              // currentArticle={currentArticle}
               deleteCurrentArticle={deleteCurrentArticle}
-              allArticles={allArticles}
+              flag={flag}
             />
           }
         />
@@ -83,14 +90,13 @@ const App = () => {
           element={
             <ArticlesList
               gettingCurrentArticle={gettingCurrentArticle}
-              // currentArticle={currentArticle}
               deleteCurrentArticle={deleteCurrentArticle}
-              allArticles={allArticles}
+              flag={flag}
             />
           }
         />
         <Route path="/sign-up" element={<SignUp />} />
-        <Route path="/sign-in" element={<SignIn editFlag={editFlag} />} />
+        <Route path="/sign-in" element={<SignIn editFlagTrue={editFlagTrue} />} />
         <Route path="/articles/:id" element={<CurrentArticle currentArticle={currentArticle} />} />
         <Route
           path="/articles/new-article"

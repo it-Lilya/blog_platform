@@ -134,9 +134,6 @@ const EditProfile = ({ editName }) => {
                   value: /^(https?:\/\/)?([^\s$.?#].[^\s]*)$/i,
                   message: 'The URL is incorrect',
                 },
-                // validate: {
-                //   notEmpty: (value) => value.trim() !== '' || 'The URL is incorrect',
-                // },
               })}
             />
             {errors.image && <span className={classes.edit__warning}>{errors.image.message}</span>}

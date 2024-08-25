@@ -21,6 +21,7 @@ const SignUp = () => {
       repeatPassword: '',
     },
   });
+
   function createWarnElem(text) {
     const warn = document.createElement('span');
     warn.className = classes.registration__warning;
@@ -57,15 +58,12 @@ const SignUp = () => {
               if (response.status === 422) {
                 return errFunc();
               }
-              // throw new Error('User already exists');
             }
           })
           .then((data) => {
             if (data.user) {
+              console.log(data.user.token);
               localStorage.setItem('token', JSON.stringify(data.user.token));
-              localStorage.setItem('username', JSON.stringify(data.user.username));
-              localStorage.setItem('image', JSON.stringify(data.user.image));
-              localStorage.setItem('user', JSON.stringify(data.user));
               setTimeout(() => {
                 navigate('/articles');
               });
@@ -83,11 +81,13 @@ const SignUp = () => {
       }
     }
   };
+
   function errFunc() {
     document
       .querySelector('input[type="checkbox"]')
       .parentElement.appendChild(createWarnElem('This user is already registered!'));
   }
+
   return (
     <div className={classes.registration__main}>
       <div className={classes.registration__container}>

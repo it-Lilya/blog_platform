@@ -1,1 +1,4 @@
 .file-upload label input { display: none; }
+.ant-pagination-options {
+  display: none !important;
+}
