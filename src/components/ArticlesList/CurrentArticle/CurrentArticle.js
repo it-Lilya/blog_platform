@@ -11,6 +11,7 @@ const CurrentArticle = ({ currentArticle }) => {
   const [control, setControl] = useState(false);
   const [currentLike, setCurrentLike] = useState(classes.article__like__btn);
   const [count, setCount] = useState();
+  const [current, setCurrent] = useState(currentArticle);
   const progressBar = useRef(null);
   const loadedRef = useRef(0);
   const navigate = useNavigate();
@@ -18,6 +19,19 @@ const CurrentArticle = ({ currentArticle }) => {
   useEffect(() => {
     window.scrollTo(0, 0);
     setIntervals(() => setInterval(() => increase(), 10));
+    if (localStorage.getItem('auth') && JSON.parse(localStorage.getItem('auth')) === true) {
+      fetch(`https://api.realworld.io/api/articles/${JSON.parse(localStorage.getItem('currentArticle'))}`, {
+        headers: {
+          Authorization: `Token ${JSON.parse(localStorage.getItem('token'))}`,
+        },
+      })
+        .then((res) => res.json())
+        .then((data) => setCurrent(data.article));
+    } else {
+      fetch(`https://api.realworld.io/api/articles/${JSON.parse(localStorage.getItem('currentArticle'))}`)
+        .then((res) => res.json())
+        .then((data) => setCurrent(data.article));
+    }
   }, []);
 
   useEffect(() => {
@@ -33,25 +47,25 @@ const CurrentArticle = ({ currentArticle }) => {
   }, [loader]);
 
   useEffect(() => {
-    if (currentArticle) {
-      setCount(currentArticle.favoritesCount);
-      const formattedText = currentArticle.body.replace(/\\n/g, '\n\n');
+    if (current) {
+      setCount(current.favoritesCount);
+      const formattedText = current.body.replace(/\\n/g, '\n\n');
       setMarkdownText(formattedText);
       if (JSON.parse(localStorage.getItem('auth'))) {
-        if (currentArticle.favorited === true) {
+        if (current.favorited === true) {
           setCurrentLike(classes.article__like__btn__active);
         } else {
           setCurrentLike(classes.article__like__btn);
         }
       }
-      if (JSON.parse(localStorage.getItem('username')) === currentArticle.author.username) {
+      if (JSON.parse(localStorage.getItem('username')) === current.author.username) {
         setControl(false);
       } else {
         setControl(true);
       }
       setLoader(false);
     }
-  }, [currentArticle]);
+  }, [current]);
 
   function increase() {
     if (loadedRef.current < 100) {
@@ -91,7 +105,7 @@ const CurrentArticle = ({ currentArticle }) => {
       document.querySelector(`.${classes.modal}`).style.display = 'none';
       return;
     } else {
-      fetch(`https://api.realworld.io/api/articles/${currentArticle.slug}`, {
+      fetch(`https://api.realworld.io/api/articles/${current.slug}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -130,7 +144,7 @@ const CurrentArticle = ({ currentArticle }) => {
             <div className={classes.article__container}>
               <div className={classes.article__title__header}>
                 <a className={classes.article__header}>
-                  <div className={classes.article__title}>{currentArticle.title}</div>
+                  <div className={classes.article__title}>{current.title}</div>
                 </a>
                 <div className={classes.article__like__favorite}>
                   <button type="button" className={currentLike}></button>
@@ -138,7 +152,7 @@ const CurrentArticle = ({ currentArticle }) => {
                 </div>
               </div>
               <div className={classes.article__tags}>
-                {currentArticle.tagList.map((tag, index) => (
+                {current.tagList.map((tag, index) => (
                   <div
                     className={`${classes.article__tag} ${index === 0 ? classes.article__tag_active : ''}`}
                     key={tag}
@@ -147,21 +161,21 @@ const CurrentArticle = ({ currentArticle }) => {
                   </div>
                 ))}
               </div>
-              <div className={classes.article__text}>{currentArticle.description}</div>
+              <div className={classes.article__text}>{current.description}</div>
               <MarkdownToJsx>{markdownText}</MarkdownToJsx>
             </div>
             <div className={classes.article__right__column}>
               <div className={classes.article__author}>
                 <div className={classes.article__author__container}>
-                  <div className={classes.article__author__name}>{currentArticle.author.username}</div>
+                  <div className={classes.article__author__name}>{current.author.username}</div>
                   <div className={classes.article__author__date_publication}>
-                    {formatPublication(currentArticle.createdAt)}
+                    {formatPublication(current.createdAt)}
                   </div>
                 </div>
                 <img
                   className={classes.article__author__avatar}
-                  src={currentArticle.author.image}
-                  alt={currentArticle.author.username}
+                  src={current.author.image}
+                  alt={current.author.username}
                 />
               </div>
               {control ? null : (
@@ -169,7 +183,7 @@ const CurrentArticle = ({ currentArticle }) => {
                   <button type="button" className={classes.control__delete} onClick={deletedArticle}>
                     Delete
                   </button>
-                  <Link to={`/articles/${currentArticle.slug}/edit`} className={classes.control__edit}>
+                  <Link to={`/articles/${current.slug}/edit`} className={classes.control__edit}>
                     Edit
                   </Link>
                   <div className={classes.modal}>

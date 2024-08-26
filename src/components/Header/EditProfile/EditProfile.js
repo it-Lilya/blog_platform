@@ -52,6 +52,7 @@ const EditProfile = ({ editName }) => {
         if (data.user) {
           localStorage.setItem('user', JSON.stringify(data.user));
           localStorage.setItem('username', JSON.stringify(data.user.username.trim()));
+          localStorage.setItem('image', JSON.stringify(data.user.image));
         }
         editName(formData.username);
       });

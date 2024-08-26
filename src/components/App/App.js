@@ -25,6 +25,7 @@ const App = () => {
   const [flag, setFlag] = useState(false);
   const [currentName, setCurrentName] = useState(JSON.parse(localStorage.getItem('username')));
   const [currentArticle, setCurrentArticle] = useState();
+  // const navigate = useNavigate();
   useEffect(() => {
     setCurrentName(JSON.parse(localStorage.getItem('username')));
   });
@@ -32,6 +33,7 @@ const App = () => {
     setFlag(JSON.parse(localStorage.getItem('auth')));
   }, []);
   function gettingCurrentArticle(e) {
+    localStorage.setItem('currentArticle', JSON.stringify(e));
     if (localStorage.getItem('auth') && JSON.parse(localStorage.getItem('auth')) === true) {
       fetch(`https://api.realworld.io/api/articles/${e}`, {
         headers: {
@@ -39,20 +41,20 @@ const App = () => {
         },
       })
         .then((res) => res.json())
-        .then((data) => {
-          return setCurrentArticle(data.article);
-        });
+        .then((data) => setCurrentArticle(data.article));
     } else {
       fetch(`https://api.realworld.io/api/articles/${e}`)
         .then((res) => res.json())
-        .then((data) => {
-          return setCurrentArticle(data.article);
-        });
+        .then((data) => setCurrentArticle(data.article));
     }
     return currentArticle;
   }
   function editFlagFalse() {
     localStorage.setItem('auth', JSON.stringify(false));
+    localStorage.removeItem('username');
+    localStorage.removeItem('token');
+    localStorage.removeItem('image');
+    localStorage.removeItem('user');
     setFlag(false);
   }
 
@@ -95,7 +97,7 @@ const App = () => {
             />
           }
         />
-        <Route path="/sign-up" element={<SignUp />} />
+        <Route path="/sign-up" element={<SignUp editFlagTrue={editFlagTrue} />} />
         <Route path="/sign-in" element={<SignIn editFlagTrue={editFlagTrue} />} />
         <Route path="/articles/:id" element={<CurrentArticle currentArticle={currentArticle} />} />
         <Route

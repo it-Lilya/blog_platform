@@ -50,7 +50,7 @@ const NewArticle = ({ gettingCurrentArticle, flagForForm }) => {
             gettingCurrentArticle(data.article.slug);
             setTimeout(() => {
               navigate(`/articles/${data.article.slug}`);
-            }, 100);
+            }, 150);
           }
         });
     } else {
@@ -79,7 +79,7 @@ const NewArticle = ({ gettingCurrentArticle, flagForForm }) => {
             gettingCurrentArticle(data.article.slug);
             setTimeout(() => {
               navigate(`/articles/${data.article.slug}`);
-            }, 100);
+            }, 150);
           }
         });
     }

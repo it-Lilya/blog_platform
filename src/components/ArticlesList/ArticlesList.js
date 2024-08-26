@@ -31,15 +31,23 @@ const ArticlesList = ({ articles = [], gettingCurrentArticle, deleteCurrentArtic
         clearInterval(interval);
       }
     }, 10);
-    return () => clearInterval(interval);
-  }, [loaded]);
-
-  useEffect(() => {
     if (progressBar.current) {
       progressBar.current.style.width = `${loaded}%`;
     }
+    return () => clearInterval(interval);
   }, [loaded]);
 
+  // useEffect(() => {
+  //   if (progressBar.current) {
+  //     progressBar.current.style.width = `${loaded}%`;
+  //   }
+  // }, [loaded]);
+  useEffect(() => {
+    if (JSON.parse(localStorage.getItem('auth')) === false) {
+      setLoaded(100);
+      setLoader(false);
+    }
+  });
   const fetchArticles = async (pageNumber) => {
     setLoader(true);
     const auth = localStorage.getItem('auth') && JSON.parse(localStorage.getItem('auth')) === true;

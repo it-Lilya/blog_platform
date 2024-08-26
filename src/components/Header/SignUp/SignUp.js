@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 
 import classes from './SignUp.module.scss';
 
-const SignUp = () => {
+const SignUp = ({ editFlagTrue }) => {
   const [check, setCheck] = useState(true);
   const navigate = useNavigate();
   const {
@@ -62,7 +62,7 @@ const SignUp = () => {
           })
           .then((data) => {
             if (data.user) {
-              console.log(data.user.token);
+              editFlagTrue();
               localStorage.setItem('token', JSON.stringify(data.user.token));
               setTimeout(() => {
                 navigate('/articles');
